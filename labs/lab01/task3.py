@@ -22,13 +22,11 @@ PERSONAL_SALT = f"{VARIANT_NUMBER:05d}"
 
 
 class ValidationError(Exception):
-    """Власний виняток для помилок валідації структури та довжини пароля."""
 
     pass
 
 
 def log_event(func):
-    """Декоратор логування: безпечно записує спроби авторизації у log.json."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -70,7 +68,6 @@ def log_event(func):
 
 
 def generate_hash(password: str, salt: str = "00000") -> str:
-    """Генерує хеш sha3_512 від пароля та солі з обов'язковою валідацією."""
     if not password or not salt:
         raise ValueError("Пароль та сіль не можуть бути порожніми.")
     if len(password) < MIN_PASSWORD_LENGTH:
@@ -103,7 +100,6 @@ def create_users(users_list: tuple[tuple[str, str], ...]) -> bool:
 
 
 def read_users_db() -> list[dict[str, str]]:
-    """Зчитує користувачів з CSV та коректно перехоплює відсутність або блокування файлу."""
     users_db = []
     try:
         with open(CSV_FILE, "r", encoding="utf-8") as f:
@@ -120,7 +116,6 @@ def read_users_db() -> list[dict[str, str]]:
 
 @log_event
 def login(username: str, password: str, users_db: list[dict[str, str]]) -> bool:
-    """Автентифікація з перевіркою коректності вхідних даних та валідності пароля."""
     try:
         if not username or not password:
             raise ValueError("Логін і пароль є обов'язковими для заповнення.")
@@ -155,7 +150,6 @@ users_to_register = (
 
 
 def run_task3() -> None:
-    """Демонстрація роботи системи та тестування всіх передбачених винятків."""
     print(f"--- Завдання 3 | Алгоритм: sha3_512, Сіль: {PERSONAL_SALT} ---")
 
     # 1. Запис бази даних
