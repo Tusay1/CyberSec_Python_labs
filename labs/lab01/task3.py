@@ -8,9 +8,7 @@ import os
 import sys
 from datetime import datetime
 
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 from shared.student import VARIANT_NUMBER
 
 DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "data"))
@@ -22,7 +20,6 @@ PERSONAL_SALT = f"{VARIANT_NUMBER:05d}"
 
 
 class ValidationError(Exception):
-
     pass
 
 
@@ -30,11 +27,7 @@ def log_event(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        username = (
-            args[0]
-            if len(args) > 0
-            else kwargs.get("username", "unknown_user")
-        )
+        username = args[0] if len(args) > 0 else kwargs.get("username", "unknown_user")
         result_flag = False
 
         try:
@@ -57,7 +50,7 @@ def log_event(func):
                 logs.append(log_record)
                 with open(LOG_FILE, "w", encoding="utf-8") as f:
                     json.dump(logs, f, indent=4, ensure_ascii=False)
-            except (PermissionError, IOError) as io_err:
+            except (OSError, PermissionError) as io_err:
                 print(f"[!] Помилка запису лог-файлу: {io_err}")
             except json.JSONDecodeError:
                 # Якщо файл пошкоджено, створюємо лог заново
@@ -94,7 +87,7 @@ def create_users(users_list: tuple[tuple[str, str], ...]) -> bool:
                 u_name, pwd_hash = create_user(user, pwd)
                 writer.writerow([u_name, pwd_hash])
         return True
-    except (FileNotFoundError, PermissionError, IOError) as e:
+    except (OSError, FileNotFoundError, PermissionError) as e:
         print(f"[ERROR] Не вдалося створити/записати CSV-базу: {e}")
         return False
 
@@ -109,7 +102,7 @@ def read_users_db() -> list[dict[str, str]]:
                     users_db.append({"username": row[0], "hash": row[1]})
     except FileNotFoundError:
         print(f"[ERROR] Файл бази {CSV_FILE} не знайдено.")
-    except (PermissionError, IOError) as e:
+    except (OSError, PermissionError) as e:
         print(f"[ERROR] Помилка доступу під час читання CSV: {e}")
     return users_db
 

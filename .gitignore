@@ -219,3 +219,8 @@ __marimo__/
 
 # Data 
 labs/**/data/
+
+
+.venv/
+__pycache__/
+*.pyc
