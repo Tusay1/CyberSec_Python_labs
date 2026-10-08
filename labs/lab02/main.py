@@ -3,7 +3,6 @@
 import argparse
 import sys
 import time
-
 from labs.lab02.task1 import Admin, AuditLog, User, UserAccount
 from labs.lab02.task2 import run_analyzer
 
@@ -15,18 +14,16 @@ def run_demo() -> None:
     user.set_password("SecurePassword2026!")
     print(f"1. Створено користувача: {user}")
 
-    print("\n2. Валідація email через @property:")
+    print("\n2. Валідація email через @property (демонстрація обробки ValueError):")
     try:
         user.email = "bad-email@"
     except ValueError as exc:
-        print(f"   [Очікувана помилка]: {exc}")
+        print(f"   [Очікуване виключення ValueError перехоплено]: {exc}")
     user.email = "alice_work@corp.ua"
     print(f"   [Успішно оновлено]: {user.email}")
 
     print("\n3. Наслідування: клас Admin:")
-    admin = Admin(
-        username="root_admin", email="admin@corp.ua", permissions={"manage_users"}
-    )
+    admin = Admin(username="root_admin", email="admin@corp.ua", permissions={"manage_users"})
     admin.grant_permission("firewall_write")
     print(f"   {admin}")
     print(f"   Чи є дозвіл 'firewall_write': {admin.has_permission('firewall_write')}")
@@ -51,11 +48,13 @@ def run_demo() -> None:
     account.logout()
     print(f"   Сесія після logout: {account.session}")
 
-    print("\n7. Спеціальні методи __getitem__ та __setitem__:")
+    print("\n7. Спеціальні методи __getitem__ та __setitem__ (демонстрація KeyError):")
     account["user"] = User(username="bob", email="bob@company.com")
-    print(
-        f"   Отримано ім'я користувача через account['user'].username: {account['user'].username}"
-    )
+    print(f"   Отримано ім'я користувача через account['user'].username: {account['user'].username}")
+    try:
+        _ = account["password_hash"]
+    except KeyError as exc:
+        print(f"   [Спроба доступу до приватного поля перехоплена KeyError]: {exc}")
 
     print("\n8. Журнал аудиту (AuditLog):")
     for log_record in audit.show_all():
@@ -71,22 +70,12 @@ def main() -> None:
 
     subparsers.add_parser("demo", help="Запустити демонстрацію Завдання 1 (ООП)")
 
-    analyze_parser = subparsers.add_parser(
-        "analyze", help="Запустити CLI-утиліту (Завдання 2)"
-    )
-    analyze_parser.add_argument(
-        "--log-file", required=True, help="Шлях до файлу access.log"
-    )
+    analyze_parser = subparsers.add_parser("analyze", help="Запустити CLI-утиліти (Завдання 2)")
+    analyze_parser.add_argument("--log-file", required=True, help="Шлях до файлу access.log")
     analyze_parser.add_argument("--output", help="Шлях для збереження звіту")
-    analyze_parser.add_argument(
-        "--min-status", type=int, default=400, help="Мінімальний HTTP-код помилки"
-    )
-    analyze_parser.add_argument(
-        "--top", type=int, default=5, help="Кількість топ-IP для виводу"
-    )
-    analyze_parser.add_argument(
-        "--format", choices=["json", "csv"], default="json", help="Формат звіту"
-    )
+    analyze_parser.add_argument("--min-status", type=int, default=400, help="Мінімальний HTTP-код помилки")
+    analyze_parser.add_argument("--top", type=int, default=5, help="Кількість топ-IP для виводу")
+    analyze_parser.add_argument("--format", choices=["json", "csv"], default="json", help="Формат звіту")
 
     args = parser.parse_args()
 
