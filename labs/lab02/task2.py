@@ -1,22 +1,26 @@
-"""Завдание 2: CLI-анализатор журналов веб-сервера (Варіант 1)."""
+"""Завдання 2: CLI-анализатор журналов веб-сервера (Варіант 1)."""
 
-from collections import Counter
 import csv
-from dataclasses import asdict, dataclass
-from datetime import datetime
 import json
 import logging
-from pathlib import Path
 import re
+from collections import Counter
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from pathlib import Path
 
 LOG_LINE_REGEX = re.compile(
     r'^(?P<ip>\S+)\s+\S+\s+\S+\s+\[(?P<time>[^\]]+)\]\s+"(?P<method>[A-Z]+)\s+(?P<uri>\S+)\s+[^\"]*"\s+(?P<status>\d{3})\s+(?P<size>\S+)'
 )
 
 ATTACK_SIGNATURES = {
-    "SQLi": re.compile(r"(\bUNION\b|\bSELECT\b|--|' OR '1'='1|;\s*DROP\b)", re.IGNORECASE),
+    "SQLi": re.compile(
+        r"(\bUNION\b|\bSELECT\b|--|' OR '1'='1|;\s*DROP\b)", re.IGNORECASE
+    ),
     "Directory Traversal": re.compile(r"(\.\./|\.\.\\|/etc/passwd)", re.IGNORECASE),
-    "XSS": re.compile(r"(<script\b|javascript:|onerror=|onload=|alert\()", re.IGNORECASE),
+    "XSS": re.compile(
+        r"(<script\b|javascript:|onerror=|onload=|alert\()", re.IGNORECASE
+    ),
 }
 
 
@@ -54,8 +58,10 @@ def parse_timestamp(ts_str: str) -> datetime:
     return datetime.strptime(raw, "%d/%b/%Y:%H:%M:%S")
 
 
-def parse_log_file(file_path: Path, min_status: int = 400) -> tuple[list[LogEntry], list[AttackAlert], Counter]:
-    """Разбирает файл лога с обработкой ошибок ввода-вывода."""
+def parse_log_file(
+    file_path: Path, min_status: int = 400
+) -> tuple[list[LogEntry], list[AttackAlert], Counter]:
+    """Файл логу."""
     logger = setup_logger()
     entries: list[LogEntry] = []
     attacks: list[AttackAlert] = []
@@ -64,7 +70,9 @@ def parse_log_file(file_path: Path, min_status: int = 400) -> tuple[list[LogEntr
     if not file_path.exists():
         raise FileNotFoundError(f"Файл логу не знайдено за шляхом: {file_path}")
     if not file_path.is_file():
-        raise IsADirectoryError(f"Вказаний шлях є директорією, а не файлом: {file_path}")
+        raise IsADirectoryError(
+            f"Вказаний шлях є директорією, а не файлом: {file_path}"
+        )
 
     try:
         with file_path.open("r", encoding="utf-8", errors="replace") as fh:
@@ -75,7 +83,11 @@ def parse_log_file(file_path: Path, min_status: int = 400) -> tuple[list[LogEntr
 
                 match = LOG_LINE_REGEX.match(line)
                 if not match:
-                    logger.debug("Рядок %d пропущено (неповноцінний формат Nginx): %s", line_no, line)
+                    logger.debug(
+                        "Рядок %d пропущено (неповноцінний формат Nginx): %s",
+                        line_no,
+                        line,
+                    )
                     continue
 
                 data = match.groupdict()
@@ -188,7 +200,9 @@ def run_analyzer(
 
         print("\n=== Detected Attack Signatures ===")
         for alert in attacks:
-            print(f'[ALERT] Potential {alert.attack_type} attack from {alert.ip}: "{alert.uri}"')
+            print(
+                f'[ALERT] Potential {alert.attack_type} attack from {alert.ip}: "{alert.uri}"'
+            )
 
         if output:
             out_p = Path(output)
