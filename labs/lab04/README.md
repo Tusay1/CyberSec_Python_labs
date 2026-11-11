@@ -69,8 +69,7 @@ labs/lab04/
 ├── api_client.py      # build_headers(), fetch_response()
 ├── analysis.py        # extract_record(), build_report(), правила 15 варіантів
 ├── data/nvd_sample.json
-├── tests/             # conftest.py, test_analysis.py, test_api_client.py, test_main.py
-└── REPORT.md / REPORT.docx
+└── tests/             # conftest.py, test_analysis.py, test_api_client.py, test_main.py
 ```
 
 ## Тести та стиль

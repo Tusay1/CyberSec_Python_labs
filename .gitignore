@@ -229,3 +229,10 @@ labs/lab03/data/*.sqlite3
 labs/lab03/data/*.sqlite3-*
 labs/lab03/data/*.db
 labs/lab03/data/*.db-*
+
+# Звіти, методички та приклади — лише локально
+labs/**/REPORT.*
+labs/**/*.docx
+labs/**/*.pdf
+labs/**/img/
+labs/ПРИКЛАД*/

@@ -26,7 +26,7 @@ labs/lab03/
 │   ├── categories.py
 │   └── records.py
 ├── data/seed.json     # 3 категорії, 8 записів (файл .sqlite3 у Git не потрапляє)
-└── REPORT.md / REPORT.docx  # Звіт
+└── README.md
 ```
 
 ## Встановлення
