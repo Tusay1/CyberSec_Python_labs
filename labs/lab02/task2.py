@@ -54,8 +54,7 @@ def setup_logger() -> logging.Logger:
 
 
 def parse_timestamp(ts_str: str) -> datetime:
-    raw = ts_str.split()[0]
-    return datetime.strptime(raw, "%d/%b/%Y:%H:%M:%S")
+    return datetime.strptime(ts_str.strip(), "%d/%b/%Y:%H:%M:%S %z")
 
 
 def parse_log_file(

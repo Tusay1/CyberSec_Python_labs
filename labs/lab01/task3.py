@@ -38,7 +38,7 @@ def log_event(func):
                 "event": "login",
                 "user": str(username),
                 "result": "success" if result_flag else "failure",
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "timestamp": datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S"),
                 "args": [str(a) for a in args],
                 "kwargs": {k: str(v) for k, v in kwargs.items()},
             }
