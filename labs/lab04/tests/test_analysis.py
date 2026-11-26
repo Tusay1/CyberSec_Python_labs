@@ -178,7 +178,8 @@ def test_invalid_variant_field_raises(sample, primary, value):
 
 
 @pytest.mark.parametrize(
-    "score", ["9.8", True, None, -0.1, 10.1, float("inf"), float("nan")]
+    "score",
+    ["9.8", True, None, -0.1, 10.1, float("inf"), float("nan"), 10**400, -(10**400)],
 )
 def test_invalid_base_score_raises(sample, primary, score):
     primary["baseScore"] = score

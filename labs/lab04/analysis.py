@@ -121,8 +121,8 @@ def _parse_metric(entry: dict) -> dict:
     if (
         isinstance(score, bool)
         or not isinstance(score, (int, float))
+        or not 0 <= score <= 10  # раніше isfinite: величезний int не стає float
         or not math.isfinite(score)
-        or not 0 <= score <= 10
     ):
         raise DataFormatError("baseScore має бути скінченним числом від 0 до 10")
 
